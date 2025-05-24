@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How I Built My First MCP Server in 5 Minutes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.7;
+            color: #2c3e50;
+            background: #ffffff;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 30px;
+        }
+
+        .title {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            font-size: 1.2em;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .author-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            color: #95a5a6;
+            font-size: 0.9em;
+        }
+
+        .intro {
+            font-size: 1.3em;
+            color: #34495e;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            border-radius: 5px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin: 40px 0 20px 0;
+            font-size: 1.8em;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            overflow-x: auto;
+            border-left: 4px solid #3498db;
+        }
+
+        .code-block pre {
+            margin: 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .step {
+            background: #ecf0f1;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 5px solid #e74c3c;
+        }
+
+        .step-number {
+            background: #e74c3c;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .step-title {
+            display: inline;
+            font-weight: bold;
+            font-size: 1.2em;
+            color: #2c3e50;
+        }
+
+        .time-badge {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .success-box {
+            background: linear-gradient(135deg, #00b894, #00a085);
+            color: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .feature-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .feature-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        .feature-list li:before {
+            content: "? ";
+            margin-right: 10px;
+        }
+
+        .conclusion {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .title {
+                font-size: 2em;
+            }
+            
+            .code-block {
+                font-size: 0.8em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="title">How I Built My First MCP Server in 5 Minutes</h1>
+            <p class="subtitle">A beginner's journey into Model Context Protocol development</p>
+            <div class="author-info">
+                ? May 24, 2025 ? ?? 5 min read ? ? Beginner Friendly
+            </div>
+        </div>
+
+        <div class="intro">
+            <strong>TL;DR:</strong> I thought building an MCP server would take hours or days. Turns out, it took me exactly 5 minutes to have a working server that could integrate with Claude and provide custom context. Here's exactly how I did it, step by step.
+        </div>
+
+        <h2>? What I Thought vs. Reality</h2>
+        <p>
+            When I first heard about <strong>Model Context Protocol (MCP)</strong>, I imagined complex server configurations, databases, and hours of debugging. I was completely wrong.
+        </p>
+        <p>
+            MCP servers are surprisingly simple: they're just programs that can provide context, tools, or resources to AI models like Claude. Think of them as smart plugins that make AI more powerful by giving it access to specific information or capabilities.
+        </p>
+
+        <h2>? The 5-Minute Challenge</h2>
+        <p>
+            I decided to time myself building my first MCP server. My goal: create a simple server that could provide information about my favorite programming languages. Here's exactly what happened:
+        </p>
+
+        <div class="step">
+            <span class="step-number">1</span>
+            <span class="step-title">Setup (1 minute)</span>
+            <span class="time-badge">1:00</span>
+            <p style="margin-top: 15px;">
+                First, I created a new directory and installed the MCP SDK:
+            </p>
+        </div>
+
+        <div class="code-block">
+            <pre>
+mkdir my-first-mcp-server
+cd my-first-mcp-server
+npm init -y
+npm install @modelcontextprotocol/sdk
+            </pre>
+        </div>
+
+        <div class="step">
+            <span class="step-number">2</span>
+            <span class="step-title">Basic Server Structure (2 minutes)</span>
+            <span class="time-badge">2:00</span>
+            <p style="margin-top: 15px;">
+                I created <code>server.js</code> with the basic MCP server structure:
+            </p>
+        </div>
+
+        <div class="code-block">
+            <pre>
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+
+// My simple data store
+const programmingLanguages = {
+  python: {
+    description: "A versatile, easy-to-learn language perfect for beginners",
+    useCase: "Web development, data science, AI, automation",
+    difficulty: "Beginner-friendly"
+  },
+  javascript: {
+    description: "The language of the web, runs everywhere",
+    useCase: "Web development, mobile apps, server-side development",
+    difficulty: "Beginner to intermediate"
+  },
+  rust: {
+    description: "Fast, safe systems programming language",
+    useCase: "Systems programming, web backends, blockchain",
+    difficulty: "Advanced"
+  }
+};
+
+// Create the server
+const server = new Server(
+  {
+    name: "programming-languages-server",
+    version: "1.0.0"
+  },
+  {
+    capabilities: {
+      resources: {}
+    }
+  }
+);
+            </pre>
+        </div>
+
+        <div class="step">
+            <span class="step-number">3</span>
+            <span class="step-title">Add Resource Handler (1 minute)</span>
+            <span class="time-badge">3:00</span>
+            <p style="margin-top: 15px;">
+                Added the logic to handle requests for programming language information:
+            </p>
+        </div>
+
+        <div class="code-block">
+            <pre>
+// Handle resource requests
+server.setRequestHandler('resources/list', async () => {
+  return {
+    resources: Object.keys(programmingLanguages).map(lang => ({
+      uri: `language://${lang}`,
+      name: `${lang.charAt(0).toUpperCase() + lang.slice(1)} Programming Language`,
+      description: programmingLanguages[lang].description,
+      mimeType: "text/plain"
+    }))
+  };
+});
+
+server.setRequestHandler('resources/read', async (request) => {
+  const uri = request.params.uri;
+  const language = uri.replace('language://', '');
+  
+  if (programmingLanguages[language]) {
+    const langInfo = programmingLanguages[language];
+    const content = `
+Language: ${language.toUpperCase()}
+Description: ${langInfo.description}
+Primary Use Cases: ${langInfo.useCase}
+Difficulty Level: ${langInfo.difficulty}
+    `.trim();
+    
+    return {
+      contents: [{
+        uri,
+        mimeType: "text/plain",
+        text: content
+      }]
+    };
+  }
+  
+  throw new Error(`Language ${language} not found`);
+});
+            </pre>
+        </div>
+
+        <div class="step">
+            <span class="step-number">4</span>
+            <span class="step-title">Start the Server (30 seconds)</span>
+            <span class="time-badge">3:30</span>
+            <p style="margin-top: 15px;">
+                Added the startup code at the end of the file:
+            </p>
+        </div>
+
+        <div class="code-block">
+            <pre>
+// Start the server
+async function main() {
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+  console.error("Programming Languages MCP Server running!");
+}
+
+main().catch(console.error);
+            </pre>
+        </div>
+
+        <div class="step">
+            <span class="step-number">5</span>
+            <span class="step-title">Test It Works (1.5 minutes)</span>
+            <span class="time-badge">5:00</span>
+            <p style="margin-top: 15px;">
+                Added the server to my Claude config and tested it:
+            </p>
+        </div>
+
+        <div class="code-block">
+            <pre>
+# In Claude's MCP settings, I added:
+{
+  "mcpServers": {
+    "programming-languages": {
+      "command": "node",
+      "args": ["path/to/my-first-mcp-server/server.js"]
+    }
+  }
+}
+            </pre>
+        </div>
+
+        <div class="success-box">
+            <h3>? SUCCESS! Total Time: 5 Minutes</h3>
+            <p>
+                My MCP server was running and Claude could now access my programming language knowledge base!
+            </p>
+        </div>
+
+        <h2>? Testing the Server</h2>
+        <p>
+            I asked Claude: <em>"What can you tell me about Python from your programming languages resource?"</em>
+        </p>
+        <p>
+            Claude responded with exactly the information from my server:
+        </p>
+
+        <div class="feature-list">
+            <strong>Claude's Response:</strong>
+            <blockquote style="margin: 15px 0; padding: 15px; border-left: 3px solid #3498db; background: #f8f9fa;">
+                "Based on your programming languages resource, Python is a versatile, easy-to-learn language perfect for beginners. It's primarily used for web development, data science, AI, and automation, with a beginner-friendly difficulty level."
+            </blockquote>
+        </div>
+
+        <h2>? What I Learned</h2>
+        <p>
+            Building my first MCP server taught me several important things:
+        </p>
+
+        <div class="feature-list">
+            <ul>
+                <li><strong>Simplicity wins:</strong> MCP servers are just programs that respond to specific requests</li>
+                <li><strong>JSON is your friend:</strong> Everything communicates via simple JSON messages</li>
+                <li><strong>Resources are powerful:</strong> Even simple data becomes valuable context for AI</li>
+                <li><strong>Testing is instant:</strong> Changes show up immediately in Claude</li>
+                <li><strong>Scalability is built-in:</strong> Easy to add more data or functionality</li>
+            </ul>
+        </div>
+
+        <h2>? What's Next?</h2>
+        <p>
+            Now that I've built my first MCP server in 5 minutes, I'm planning to:
+        </p>
+
+        <div class="feature-list">
+            <ul>
+                <li>Add more programming languages to my knowledge base</li>
+                <li>Connect it to a real database</li>
+                <li>Add tools (not just resources) for interactive functionality</li>
+                <li>Create servers for my work projects and personal data</li>
+                <li>Share my servers with my team</li>
+            </ul>
+        </div>
+
+        <div class="conclusion">
+            <h3>? The Bottom Line</h3>
+            <p style="font-size: 1.2em; margin-bottom: 15px;">
+                If you can write a simple Node.js program, you can build an MCP server.
+            </p>
+            <p>
+                Don't let the fancy name intimidate you. Model Context Protocol is just a way to give AI access to your data and tools. Start with 5 minutes and a simple idea ? you'll be amazed at what you can build!
+            </p>
+            <p style="margin-top: 20px;">
+                <strong>Ready to build your own MCP server? The clock starts now! ?</strong>
+            </p>
+        </div>
+    </div>
+</body>
+</html>
