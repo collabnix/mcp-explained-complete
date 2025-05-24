@@ -1,0 +1,22 @@
+{
+  "name": "mcp-programming-languages-server",
+  "version": "1.0.0",
+  "description": "Simple MCP server providing programming language information",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "programming-languages"
+  ],
+  "author": "MCP Tutorial",
+  "license": "MIT",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  }
+}
