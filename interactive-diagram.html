@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCP Architecture Diagram</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        .title {
+            text-align: center;
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.2em;
+            color: #7f8c8d;
+            margin-bottom: 40px;
+        }
+
+        .stage {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-left: 6px solid #3498db;
+            transition: all 0.3s ease;
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .stage:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+
+        .stage.storage { border-left-color: #e74c3c; }
+        .stage.indexing { border-left-color: #f39c12; }
+        .stage.retrieval { border-left-color: #27ae60; }
+        .stage.assembly { border-left-color: #9b59b6; }
+        .stage.execution { border-left-color: #34495e; }
+
+        .stage-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .stage-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #3498db;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .storage .stage-number { background: #e74c3c; }
+        .indexing .stage-number { background: #f39c12; }
+        .retrieval .stage-number { background: #27ae60; }
+        .assembly .stage-number { background: #9b59b6; }
+        .execution .stage-number { background: #34495e; }
+
+        .stage-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .stage-description {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            line-height: 1.6;
+        }
+
+        .stage-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .content-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #ecf0f1;
+            transition: all 0.3s ease;
+        }
+
+        .content-item:hover {
+            border-color: #3498db;
+            background: #e8f4fd;
+            transform: scale(1.02);
+        }
+
+        .content-item h4 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+
+        .content-item p {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            line-height: 1.4;
+        }
+
+        .user-input {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .user-input h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .llm-output {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .llm-output h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .metric {
+            background: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .title {
+                font-size: 2em;
+            }
+            
+            .stage-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Model Context Protocol (MCP)</h1>
+        <p class="subtitle">Intelligent Context Management Pipeline for Large Language Models</p>
+        
+        <div class="user-input">
+            <h3>? User Query Input</h3>
+            <p>"How do I implement a binary search algorithm in Python?"</p>
+        </div>
+
+        <!-- Stage 1: Context Storage -->
+        <div class="stage storage">
+            <div class="stage-header">
+                <div class="stage-number">1</div>
+                <div class="stage-title">Context Storage</div>
+            </div>
+            <div class="stage-description">
+                Where your knowledge lives - organized repositories of information that serve as the foundation for context retrieval
+            </div>
+            
+            <div class="stage-content">
+                <div class="content-item">
+                    <h4>? Documents</h4>
+                    <p>PDFs, articles, manuals, research papers, documentation</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Code Repositories</h4>
+                    <p>GitHub repos, code snippets, algorithms, examples</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Chat History</h4>
+                    <p>Previous conversations, user preferences, context memory</p>
+                </div>
+                <div class="content-item">
+                    <h4>?? Databases</h4>
+                    <p>Structured data, APIs, knowledge graphs, metadata</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Web Content</h4>
+                    <p>Crawled pages, forums, Stack Overflow, tutorials</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Multimedia</h4>
+                    <p>Images, videos, audio, diagrams, presentations</p>
+                </div>
+            </div>
+            
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-value">50TB</div>
+                    <div class="metric-label">Total Storage</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">2.5M</div>
+                    <div class="metric-label">Documents</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">15K</div>
+                    <div class="metric-label">Code Files</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stage 2: Context Indexing -->
+        <div class="stage indexing">
+            <div class="stage-header">
+                <div class="stage-number">2</div>
+                <div class="stage-title">Context Indexing</div>
+            </div>
+            <div class="stage-description">
+                Transform raw content into searchable representations using multiple indexing strategies for optimal retrieval
+            </div>
+            
+            <div class="stage-content">
+                <div class="content-item">
+                    <h4>? Semantic Embeddings</h4>
+                    <p>Dense vectors using models like BERT, MPNet for meaning-based search</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Keyword Indexing</h4>
+                    <p>TF-IDF, BM25 for exact term matching and lexical search</p>
+                </div>
+                <div class="content-item">
+                    <h4>?? Graph Relationships</h4>
+                    <p>Entity connections, knowledge graphs, document relationships</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Temporal Indexing</h4>
+                    <p>Time-based organization, recency scoring, version tracking</p>
+                </div>
+                <div class="content-item">
+                    <h4>?? Metadata Tagging</h4>
+                    <p>Content type, source, authority, user ratings, quality scores</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Hierarchical Categories</h4>
+                    <p>Topic classification, domain categorization, skill levels</p>
+                </div>
+            </div>
+            
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-value">768</div>
+                    <div class="metric-label">Vector Dimensions</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">99.2%</div>
+                    <div class="metric-label">Index Coverage</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">12ms</div>
+                    <div class="metric-label">Avg Index Time</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stage 3: Context Retrieval -->
+        <div class="stage retrieval">
+            <div class="stage-header">
+                <div class="stage-number">3</div>
+                <div class="stage-title">Context Retrieval</div>
+            </div>
+            <div class="stage-description">
+                Intelligent logic to fetch the most relevant context using multi-signal ranking and user-aware filtering
+            </div>
+            
+            <div class="stage-content">
+                <div class="content-item">
+                    <h4>? Semantic Similarity</h4>
+                    <p>Vector similarity search using cosine distance, FAISS indexing</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Keyword Matching</h4>
+                    <p>Exact term matches, phrase detection, boolean queries</p>
+                </div>
+                <div class="content-item">
+                    <h4>?? Graph Traversal</h4>
+                    <p>Related concepts, entity connections, topic clustering</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Personalization</h4>
+                    <p>User history, skill level, preferences, past interactions</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Real-time Signals</h4>
+                    <p>Trending topics, recent updates, community engagement</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Diversity Injection</h4>
+                    <p>Multiple perspectives, different approaches, varied sources</p>
+                </div>
+            </div>
+            
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-value">25ms</div>
+                    <div class="metric-label">Retrieval Time</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">94.7%</div>
+                    <div class="metric-label">Relevance Score</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">15</div>
+                    <div class="metric-label">Candidates Found</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stage 4: Context Assembly -->
+        <div class="stage assembly">
+            <div class="stage-header">
+                <div class="stage-number">4</div>
+                <div class="stage-title">Context Assembly</div>
+            </div>
+            <div class="stage-description">
+                Format, rank, and optimize context selection to create the most effective prompt within token constraints
+            </div>
+            
+            <div class="stage-content">
+                <div class="content-item">
+                    <h4>? Relevance Ranking</h4>
+                    <p>Multi-signal scoring, ML-based ranking, quality assessment</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Token Management</h4>
+                    <p>Budget allocation, content truncation, smart summarization</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Template Formatting</h4>
+                    <p>Structured prompts, role definitions, instruction clarity</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Content Optimization</h4>
+                    <p>Remove redundancy, enhance clarity, maintain coherence</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Context Linking</h4>
+                    <p>Reference connections, source attribution, relationship mapping</p>
+                </div>
+                <div class="content-item">
+                    <h4>?? Bias Mitigation</h4>
+                    <p>Perspective balancing, fair representation, ethical filtering</p>
+                </div>
+            </div>
+            
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-value">5</div>
+                    <div class="metric-label">Final Contexts</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">3,847</div>
+                    <div class="metric-label">Total Tokens</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">92%</div>
+                    <div class="metric-label">Token Efficiency</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stage 5: Prompt Execution -->
+        <div class="stage execution">
+            <div class="stage-header">
+                <div class="stage-number">5</div>
+                <div class="stage-title">Prompt Execution</div>
+            </div>
+            <div class="stage-description">
+                Send the optimized prompt to the LLM and handle the response with monitoring and feedback collection
+            </div>
+            
+            <div class="stage-content">
+                <div class="content-item">
+                    <h4>? LLM Integration</h4>
+                    <p>API calls, model selection, parameter tuning, load balancing</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Response Monitoring</h4>
+                    <p>Quality assessment, latency tracking, error handling</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Feedback Collection</h4>
+                    <p>User ratings, implicit signals, response effectiveness</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Result Caching</h4>
+                    <p>Response storage, similarity matching, cache optimization</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Performance Analytics</h4>
+                    <p>Success metrics, usage patterns, optimization insights</p>
+                </div>
+                <div class="content-item">
+                    <h4>? Continuous Learning</h4>
+                    <p>Model updates, preference learning, system improvement</p>
+                </div>
+            </div>
+            
+            <div class="metrics">
+                <div class="metric">
+                    <div class="metric-value">1.2s</div>
+                    <div class="metric-label">Response Time</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">98.1%</div>
+                    <div class="metric-label">Success Rate</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">4.7/5</div>
+                    <div class="metric-label">User Rating</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="llm-output">
+            <h3>? LLM Response Output</h3>
+            <p>"Here's a Python implementation of binary search with O(log n) complexity..."</p>
+        </div>
+    </div>
+</body>
+</html>
